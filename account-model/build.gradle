@@ -1,0 +1,18 @@
+plugins {
+    id 'java-library'
+}
+
+ext {
+    boolean publish = true
+}
+
+dependencies {
+    implementation 'org.hibernate.validator:hibernate-validator'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+}
+
+jar {
+    archiveName "${project.name}.jar"
+}

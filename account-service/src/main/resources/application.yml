@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: account-service
+  jackson:
+    default-property-inclusion: non_null
+  jpa:
+    generate-ddl: false
+    properties:
+      hibernate:
+        default_schema: account
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog.yml
+  datasource:
+    url:
+    username:
+    password:
+
+jwt:
+  issuer: tunepoint
+  access-token-ttl: 3600000
+  refresh-token-ttl: 86400000
+
+security:
+  secret: secret
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8765/eureka
+
+---
+spring:
+  profiles:
+    active: noeureka
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false

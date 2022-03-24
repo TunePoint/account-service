@@ -1,0 +1,19 @@
+plugins {
+    id 'java-library'
+}
+
+ext {
+    boolean publish = true
+}
+
+dependencies {
+
+    implementation project(':account-model')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+}
+
+jar {
+    archiveName "${project.name}.jar"
+}
+
