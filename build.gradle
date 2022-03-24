@@ -6,14 +6,14 @@ plugins {
 }
 
 allprojects {
-    group = 'ua.tunepoint.account'
+    group = 'ua.tunepoint'
     version = '0.0.1'
 }
 
 subprojects {
 
     apply plugin: 'java-library'
-    apply plugin: "io.spring.dependency-management"
+    apply plugin: 'io.spring.dependency-management'
     apply plugin: 'maven-publish'
 
     java {
@@ -70,7 +70,7 @@ subprojects {
         }
     }
 
-    if (it.ext.has('publish')) {
+    if (file('publish.gradle').exists()) {
 
         publishing {
             publications {
