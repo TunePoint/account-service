@@ -7,7 +7,7 @@ import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import ua.tunepoint.account.data.entity.Profile;
 import ua.tunepoint.model.request.UpdateProfileRequest;
-import ua.tunepoint.model.response.domain.Media;
+import ua.tunepoint.model.response.domain.Resource;
 import ua.tunepoint.model.response.payload.ProfilePayload;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
@@ -19,9 +19,10 @@ public interface ProfileMapper {
             @Mapping(target = "lastName", source = "profile.lastName"),
             @Mapping(target = "bio", source = "profile.bio"),
             @Mapping(target = "birthDate", source = "profile.birthDate"),
+            @Mapping(target = "username", source = "profile.user.username"),
             @Mapping(target = "avatar", source = "avatar")
     })
-    ProfilePayload toPayload(Profile profile, Media avatar);
+    ProfilePayload toPayload(Profile profile, Resource avatar);
 
     void mergeProfile(@MappingTarget Profile profile, UpdateProfileRequest request);
 }

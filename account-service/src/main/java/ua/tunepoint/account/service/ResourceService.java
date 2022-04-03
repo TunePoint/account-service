@@ -1,16 +1,18 @@
 package ua.tunepoint.account.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import ua.tunepoint.account.exception.ExternalException;
 import ua.tunepoint.account.service.client.ResourceClient;
 import ua.tunepoint.account.service.client.mapper.ResourceMapper;
-import ua.tunepoint.model.response.domain.Media;
-import ua.tunepoint.resource.model.response.payload.MediaPayload;
+import ua.tunepoint.model.response.domain.Resource;
 
-import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ResourceService {
 
@@ -18,17 +20,18 @@ public class ResourceService {
 
     private final ResourceMapper resourceMapper;
 
-    @Nullable
-    public Media getMedia(String id) {
+    @NotNull
+    public Optional<Resource> getImage(String id) {
         if (id == null) {
-            return null;
+            return Optional.empty();
         }
 
-        var response = client.getResource(id).getBody();
-        if (response == null || response.getStatus() != 0) {
-            throw new ExternalException("Resource service returned invalid response");
+        var response = client.getImage(id);
+        if (response == null || response.getBody() == null || response.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+            log.warn("Image was not found");
+            return Optional.empty();
         }
 
-        return resourceMapper.toMedia(response.getPayload());
+        return Optional.ofNullable(resourceMapper.toResource(response.getBody().getPayload()));
     }
 }

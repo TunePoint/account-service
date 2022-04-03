@@ -18,4 +18,6 @@ public class UpdateProfileRequest {
     private String bio;
 
     private LocalDate birthDate;
+
+    private String avatarId;
 }

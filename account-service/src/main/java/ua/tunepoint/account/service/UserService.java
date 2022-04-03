@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import ua.tunepoint.account.data.entity.User;
 import ua.tunepoint.account.data.mapper.UserMapper;
 import ua.tunepoint.account.data.repository.UserRepository;
-import ua.tunepoint.account.exception.NotFoundException;
 import ua.tunepoint.model.response.payload.UserBasePayload;
 import ua.tunepoint.model.response.payload.UserFullPayload;
+import ua.tunepoint.web.exception.NotFoundException;
 
 import java.util.function.Function;
 

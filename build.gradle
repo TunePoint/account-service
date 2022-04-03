@@ -64,9 +64,11 @@ subprojects {
 
             dependency 'org.hibernate.validator:hibernate-validator:6.2.2.Final'
 
-            dependency 'ua.tunepoint:commons-security:0.0.1'
-            dependency 'ua.tunepoint:resource-api:0.0.1'
-            dependency 'ua.tunepoint:resource-model:0.0.1'
+            dependency 'ua.tunepoint:commons-security:0.0.2'
+            dependency 'ua.tunepoint:commons-web-model:0.0.3'
+            dependency 'ua.tunepoint:commons-web-exception:0.0.3'
+            dependency 'ua.tunepoint:resource-api:0.0.4'
+            dependency 'ua.tunepoint:resource-model:0.0.4'
         }
     }
 

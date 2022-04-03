@@ -33,12 +33,3 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8765/eureka
-
----
-spring:
-  profiles:
-    active: noeureka
-eureka:
-  client:
-    register-with-eureka: false
-    fetch-registry: false

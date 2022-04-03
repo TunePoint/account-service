@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ua.tunepoint.model.response.domain.Media;
+import ua.tunepoint.model.response.domain.Resource;
 
 import java.time.LocalDate;
 
@@ -17,6 +17,8 @@ public class ProfilePayload {
 
     private Long id;
 
+    private String username;
+
     private String firstName;
 
     private String lastName;
@@ -25,5 +27,5 @@ public class ProfilePayload {
 
     private LocalDate birthDate;
 
-    private Media avatar;
+    private Resource avatar;
 }

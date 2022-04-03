@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.tunepoint.account.service.ProfileService;
 import ua.tunepoint.model.request.UpdateProfileRequest;
-import ua.tunepoint.model.response.ProfileResponse;
+import ua.tunepoint.model.response.ProfileGetResponse;
+import ua.tunepoint.model.response.ProfileUpdateResponse;
 import ua.tunepoint.security.UserPrincipal;
 
 @RestController
@@ -23,30 +24,26 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProfileResponse> getProfile(@PathVariable Long id) {
+    public ResponseEntity<ProfileGetResponse> getProfile(@PathVariable Long id) {
         return ResponseEntity.ok(doGetProfile(id));
     }
 
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ProfileResponse> getCurrentUserProfile(@AuthenticationPrincipal UserPrincipal currentUser) {
+    public ResponseEntity<ProfileGetResponse> getCurrentUserProfile(@AuthenticationPrincipal UserPrincipal currentUser) {
         return ResponseEntity.ok(doGetProfile(currentUser.getId()));
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ProfileResponse> updateProfile(@AuthenticationPrincipal UserPrincipal currentUser, @RequestBody UpdateProfileRequest request) {
-        var payload = profileService.update(currentUser.getId(), request);
-        var response = ProfileResponse.builder()
-                .payload(payload)
-                .build();
+    public ResponseEntity<ProfileUpdateResponse> updateProfile(@PathVariable Long id, @AuthenticationPrincipal UserPrincipal currentUser, @RequestBody UpdateProfileRequest request) {
+        var payload = profileService.update(id, request, currentUser);
+        var response = ProfileUpdateResponse.builder().payload(payload).build();
         return ResponseEntity.ok(response);
     }
 
-    private ProfileResponse doGetProfile(Long id) {
+    private ProfileGetResponse doGetProfile(Long id) {
         var payload = profileService.findById(id);
-        return ProfileResponse.builder()
-                .payload(payload)
-                .build();
+        return ProfileGetResponse.builder().payload(payload).build();
     }
 }

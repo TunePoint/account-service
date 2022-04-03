@@ -9,18 +9,20 @@ import ua.tunepoint.account.data.mapper.SignupRequestMapper;
 import ua.tunepoint.account.data.mapper.UserMapper;
 import ua.tunepoint.account.data.repository.RoleRepository;
 import ua.tunepoint.account.data.repository.UserRepository;
-import ua.tunepoint.account.exception.ForbiddenException;
-import ua.tunepoint.account.exception.InternalException;
-import ua.tunepoint.account.exception.NotFoundException;
 import ua.tunepoint.account.security.JwtTokenProvider;
 import ua.tunepoint.account.security.Roles;
 import ua.tunepoint.model.request.AuthenticationRequest;
-import ua.tunepoint.model.request.UpdatePasswordRequest;
 import ua.tunepoint.model.request.SignupRequest;
+import ua.tunepoint.model.request.UpdatePasswordRequest;
 import ua.tunepoint.model.response.payload.AuthenticationPayload;
 import ua.tunepoint.model.response.payload.RefreshPayload;
 import ua.tunepoint.model.response.payload.SignupPayload;
+import ua.tunepoint.web.exception.BadRequestException;
+import ua.tunepoint.web.exception.ForbiddenException;
+import ua.tunepoint.web.exception.NotFoundException;
+import ua.tunepoint.web.exception.ServerException;
 
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
@@ -41,6 +43,7 @@ public class AuthenticationService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("User with email '" + request.getEmail() + "' was not found"));
 
+//        requireUserActive(user);
         requirePasswordMatch(request.getPassword(), user.getPasswordHash(), "Wrong password");
 
         return AuthenticationPayload.builder()
@@ -59,6 +62,7 @@ public class AuthenticationService {
                 .build();
     }
 
+    @Transactional
     public SignupPayload signup(@NotNull SignupRequest request) {
 
         var user = signupUser(request);
@@ -81,9 +85,24 @@ public class AuthenticationService {
     }
 
     private void requirePasswordMatch(String password, String hashedPassword, String errorMessage) {
-
         if (!passwordEncoder.matches(password, hashedPassword)) {
             throw new ForbiddenException(errorMessage);
+        }
+    }
+
+    private void requireUserActive(@NotNull User user) {
+        if (user.getIsVerified() == null || !user.getIsVerified()) {
+            throw new ForbiddenException("User " + user.getUsername() + " is not verified");
+        }
+    }
+
+    private void requireUniqueCredentials(SignupRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new BadRequestException("User with specified email already exists");
+        }
+
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new BadRequestException("User with specified username already exists");
         }
     }
 
@@ -92,7 +111,7 @@ public class AuthenticationService {
         User newUser = signupRequestMapper.toUser(request);
 
         Role role = roleRepository.findByName(Roles.ROLE_USER.name())
-                .orElseThrow(() -> new InternalException("Unable to assign role to user"));
+                .orElseThrow(() -> new ServerException("Unable to assign role to user"));
 
         newUser.setRoles(Set.of(role));
         return newUser;

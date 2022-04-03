@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.tunepoint.account.service.AuthenticationService;
 import ua.tunepoint.model.request.AuthenticationRequest;
-import ua.tunepoint.model.request.UpdatePasswordRequest;
 import ua.tunepoint.model.request.SignupRequest;
+import ua.tunepoint.model.request.UpdatePasswordRequest;
 import ua.tunepoint.model.response.AuthenticationResponse;
 import ua.tunepoint.model.response.RefreshResponse;
 import ua.tunepoint.model.response.SignupResponse;
-import ua.tunepoint.model.response.StatusResponse;
 import ua.tunepoint.security.UserPrincipal;
+import ua.tunepoint.web.model.StatusResponse;
 
 import javax.validation.Valid;
 
@@ -31,18 +31,14 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<SignupResponse> signup(@RequestBody @Valid SignupRequest request) {
         var signupPayload = service.signup(request);
-        var response = SignupResponse.builder()
-                .payload(signupPayload)
-                .build();
+        var response = SignupResponse.builder().payload(signupPayload).build();
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/token")
     public ResponseEntity<AuthenticationResponse> token(@RequestBody @Valid AuthenticationRequest request) {
         var authenticationPayload = service.authenticate(request);
-        var response = AuthenticationResponse.builder()
-                .payload(authenticationPayload)
-                .build();
+        var response = AuthenticationResponse.builder().payload(authenticationPayload).build();
         return ResponseEntity.ok(response);
     }
 
@@ -50,9 +46,7 @@ public class AuthController {
     @PostMapping("/token/refresh")
     public ResponseEntity<RefreshResponse> refreshToken(@AuthenticationPrincipal UserPrincipal user) {
         var refreshPayload = service.refresh(user.getUsername());
-        var response = RefreshResponse.builder()
-                .payload(refreshPayload)
-                .build();
+        var response = RefreshResponse.builder().payload(refreshPayload).build();
         return ResponseEntity.ok(response);
     }
 
