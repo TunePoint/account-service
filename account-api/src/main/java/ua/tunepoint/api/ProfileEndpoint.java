@@ -8,5 +8,5 @@ import ua.tunepoint.model.response.ProfileGetResponse;
 public interface ProfileEndpoint {
 
     @GetMapping("/profiles/{id}")
-    ResponseEntity<ProfileGetResponse> getProfile(@PathVariable Long id);
+    ResponseEntity<ProfileGetResponse> getProfile(@PathVariable("id") Long id);
 }

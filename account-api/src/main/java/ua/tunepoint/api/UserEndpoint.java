@@ -8,5 +8,5 @@ import ua.tunepoint.model.response.UserBaseGetResponse;
 public interface UserEndpoint {
 
     @GetMapping("/users/{id}")
-    ResponseEntity<UserBaseGetResponse> getUser(@PathVariable Long id);
+    ResponseEntity<UserBaseGetResponse> getUser(@PathVariable("id") Long id);
 }
