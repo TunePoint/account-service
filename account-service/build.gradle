@@ -14,6 +14,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.mapstruct:mapstruct'
     implementation 'org.liquibase:liquibase-core'
     implementation 'com.auth0:java-jwt'
@@ -24,6 +25,8 @@ dependencies {
     implementation 'ua.tunepoint:resource-model'
     implementation 'ua.tunepoint:commons-web-exception'
     implementation 'ua.tunepoint:commons-web-model'
+    implementation 'ua.tunepoint:commons-event-model'
+    implementation 'ua.tunepoint:commons-event-starter'
 
     compileOnly 'org.projectlombok:lombok'
     compileOnly 'org.mapstruct:mapstruct-processor'

@@ -19,6 +19,10 @@ spring:
     username:
     password:
 
+event:
+  bootstrap-servers:
+  service-name: ${spring.application.name}
+
 jwt:
   issuer: tunepoint
   access-token-ttl: 3600000

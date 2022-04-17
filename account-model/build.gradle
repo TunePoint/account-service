@@ -6,6 +6,7 @@ plugins {
 dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'ua.tunepoint:commons-web-model'
+    implementation 'ua.tunepoint:commons-event-model'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
