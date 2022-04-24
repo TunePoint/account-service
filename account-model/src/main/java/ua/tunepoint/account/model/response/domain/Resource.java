@@ -1,4 +1,4 @@
-package ua.tunepoint.model.response.domain;
+package ua.tunepoint.account.model.response.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

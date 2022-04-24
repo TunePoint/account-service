@@ -1,4 +1,4 @@
-package ua.tunepoint.model.request;
+package ua.tunepoint.account.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

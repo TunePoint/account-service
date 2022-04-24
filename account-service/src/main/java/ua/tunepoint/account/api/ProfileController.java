@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.tunepoint.account.service.ProfileService;
-import ua.tunepoint.model.request.UpdateProfileRequest;
-import ua.tunepoint.model.response.ProfileGetResponse;
-import ua.tunepoint.model.response.ProfileUpdateResponse;
+import ua.tunepoint.account.model.request.UpdateProfileRequest;
+import ua.tunepoint.account.model.response.ProfileGetResponse;
+import ua.tunepoint.account.model.response.ProfileUpdateResponse;
 import ua.tunepoint.security.UserPrincipal;
 
 @RestController

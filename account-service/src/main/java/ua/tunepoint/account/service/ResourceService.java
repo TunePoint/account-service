@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ua.tunepoint.account.service.client.ResourceClient;
 import ua.tunepoint.account.service.client.mapper.ResourceMapper;
-import ua.tunepoint.model.response.domain.Resource;
+import ua.tunepoint.account.model.response.domain.Resource;
 
 import javax.validation.constraints.NotNull;
 import java.util.Optional;

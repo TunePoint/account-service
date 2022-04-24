@@ -6,9 +6,9 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import ua.tunepoint.account.data.entity.Profile;
-import ua.tunepoint.model.request.UpdateProfileRequest;
-import ua.tunepoint.model.response.domain.Resource;
-import ua.tunepoint.model.response.payload.ProfilePayload;
+import ua.tunepoint.account.model.request.UpdateProfileRequest;
+import ua.tunepoint.account.model.response.domain.Resource;
+import ua.tunepoint.account.model.response.payload.ProfilePayload;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProfileMapper {

@@ -1,10 +1,10 @@
-package ua.tunepoint.model.response.payload;
+package ua.tunepoint.account.model.response.payload;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ua.tunepoint.model.response.domain.Resource;
+import ua.tunepoint.account.model.response.domain.Resource;
 
 import java.time.LocalDate;
 
