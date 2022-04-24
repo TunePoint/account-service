@@ -10,6 +10,4 @@ import java.util.Optional;
 @Repository
 public interface ProfileRepository extends JpaRepository<Profile, Long> {
 
-    @Query("SELECT p FROM Profile p LEFT JOIN FETCH p.user WHERE p.id = :id")
-    Optional<Profile> findByIdWithUser(Long id);
 }

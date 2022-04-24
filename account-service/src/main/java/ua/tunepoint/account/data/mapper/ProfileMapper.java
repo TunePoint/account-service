@@ -19,7 +19,7 @@ public interface ProfileMapper {
             @Mapping(target = "lastName", source = "profile.lastName"),
             @Mapping(target = "bio", source = "profile.bio"),
             @Mapping(target = "birthDate", source = "profile.birthDate"),
-            @Mapping(target = "username", source = "profile.user.username"),
+            @Mapping(target = "username", source = "profile.username"),
             @Mapping(target = "avatar", source = "avatar")
     })
     ProfilePayload toPayload(Profile profile, Resource avatar);

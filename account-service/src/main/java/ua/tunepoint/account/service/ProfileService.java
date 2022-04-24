@@ -2,6 +2,7 @@ package ua.tunepoint.account.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ua.tunepoint.account.data.entity.Profile;
 import ua.tunepoint.account.data.mapper.ProfileMapper;
 import ua.tunepoint.account.data.repository.ProfileRepository;
 import ua.tunepoint.account.security.profile.ProfileUpdateAccessManager;
@@ -23,8 +24,12 @@ public class ProfileService {
     private final ProfileMapper profileMapper;
     private final ProfileUpdateAccessManager profileUpdateAccessManager;
 
+    public void create(Long id, String username, String email) {
+        profileRepository.save(Profile.create(id, username, email));
+    }
+
     public ProfilePayload findById(Long id) {
-        var profile = profileRepository.findByIdWithUser(id)
+        var profile = profileRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Profile for user with id '" + id + "' was not found"));
 
         var avatar = resourceService.getImage(profile.getAvatarId()).orElse(null);
@@ -33,7 +38,7 @@ public class ProfileService {
     }
 
     public ProfilePayload update(Long id, UpdateProfileRequest request, UserPrincipal user) {
-        var profile = profileRepository.findByIdWithUser(id)
+        var profile = profileRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Profile for user with id '" + id + "' was not found"));
 
         profileUpdateAccessManager.authorize(user, profile);

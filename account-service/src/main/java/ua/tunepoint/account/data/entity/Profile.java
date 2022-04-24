@@ -27,8 +27,13 @@ public class Profile {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "username")
+    private String username;
+
+    @Column(name = "email")
+    private String email;
 
     @Column(name = "first_name")
     private String firstName;
@@ -51,9 +56,11 @@ public class Profile {
     @Column(name = "avatar_id")
     private String avatarId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
-    private User user;
+    @Column(name = "country")
+    private String country;
+
+    @Column(name = "city")
+    private String city;
 
     @PrePersist
     public void onCreate() {
@@ -64,5 +71,15 @@ public class Profile {
     @PreUpdate
     public void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public static Profile create(Long id, String username, String email) {
+        var profile = new Profile();
+
+        profile.setId(id);
+        profile.setUsername(username);
+        profile.setEmail(email);
+
+        return profile;
     }
 }

@@ -7,7 +7,7 @@ plugins {
 
 allprojects {
     group = 'ua.tunepoint'
-    version = '0.0.4'
+    version = '0.0.5'
 }
 
 subprojects {
@@ -65,7 +65,8 @@ subprojects {
 
             dependency 'org.hibernate.validator:hibernate-validator:6.2.2.Final'
 
-            dependency 'ua.tunepoint:commons-security:0.0.2'
+            dependency 'ua.tunepoint:commons-security:0.0.3'
+            dependency 'ua.tunepoint:auth-model:0.0.7'
             dependency 'ua.tunepoint:commons-web-model:0.0.3'
             dependency 'ua.tunepoint:commons-event-model:0.0.10'
             dependency 'ua.tunepoint:commons-event-starter:0.0.10'

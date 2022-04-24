@@ -23,24 +23,6 @@ event:
   bootstrap-servers:
   service-name: ${spring.application.name}
 
-jwt:
-  issuer: tunepoint
-  access-token-ttl: 3600000
-  refresh-token-ttl: 86400000
-
-confirmation:
-  attempts: 3
-  code:
-    due-period: 1h
-    block-resend-period: 1m
-    length: 4
-  email:
-    template: "email_confirm"
-    subject: "Tunepoint. Email confirmation"
-
-security:
-  secret: secret
-
 eureka:
   client:
     register-with-eureka: true

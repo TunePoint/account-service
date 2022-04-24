@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: user-1
+      id: account-1
       author: tunepoint
       changes:
         - sqlFile:

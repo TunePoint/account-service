@@ -21,6 +21,7 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
 
     implementation 'ua.tunepoint:commons-security'
+    implementation 'ua.tunepoint:auth-model'
     implementation 'ua.tunepoint:resource-api'
     implementation 'ua.tunepoint:resource-model'
     implementation 'ua.tunepoint:commons-web-exception'
