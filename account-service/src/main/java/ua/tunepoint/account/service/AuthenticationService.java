@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.tunepoint.account.data.Roles;
 import ua.tunepoint.account.data.entity.Role;
 import ua.tunepoint.account.data.entity.User;
 import ua.tunepoint.account.data.mapper.SignupRequestMapper;
@@ -11,8 +12,6 @@ import ua.tunepoint.account.data.mapper.UserMapper;
 import ua.tunepoint.account.data.repository.RoleRepository;
 import ua.tunepoint.account.data.repository.UserRepository;
 import ua.tunepoint.account.security.JwtTokenProvider;
-import ua.tunepoint.account.security.Roles;
-import ua.tunepoint.event.starter.publisher.EventPublisher;
 import ua.tunepoint.model.request.AuthenticationRequest;
 import ua.tunepoint.model.request.SignupRequest;
 import ua.tunepoint.model.request.UpdatePasswordRequest;
@@ -27,10 +26,6 @@ import ua.tunepoint.web.exception.ServerException;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
-import static java.util.Collections.singletonList;
-import static ua.tunepoint.account.utils.EventUtils.toCreatedEvent;
-import static ua.tunepoint.model.event.AccountDomain.USER;
-
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -39,7 +34,8 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final JwtTokenProvider tokenProvider;
-    private final EventPublisher eventPublisher;
+
+    private final ConfirmationService confirmationService;
 
     private final SignupRequestMapper signupRequestMapper;
     private final UserMapper userMapper;
@@ -49,6 +45,7 @@ public class AuthenticationService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("User with email '" + request.getEmail() + "' was not found"));
 
+        requireUserConfirmed(user);
         requirePasswordMatch(request.getPassword(), user.getPasswordHash(), "Wrong password");
 
         return AuthenticationPayload.builder()
@@ -71,19 +68,15 @@ public class AuthenticationService {
     public SignupPayload signup(@NotNull SignupRequest request) {
 
         requireUniqueCredentials(request);
+
         var user = signupUser(request);
 
-        var savedUser = userRepository.save(user);
+        confirmationService.sendEmail(user.getEmail(), user.getUsername(), user.getConfirmationCode().getCode());
 
-        var payload = userMapper.toSignupPayload(savedUser);
-
-        eventPublisher.publish(USER.getName(),
-                singletonList(toCreatedEvent(savedUser))
-        );
-
-        return payload;
+        return userMapper.toSignupPayload(user);
     }
 
+    @Transactional
     public void updatePassword(@NotNull UpdatePasswordRequest request, Long userId) {
 
         var user = userRepository.findById(userId)
@@ -102,8 +95,8 @@ public class AuthenticationService {
         }
     }
 
-    private void requireUserActive(@NotNull User user) {
-        if (user.getIsVerified() == null || !user.getIsVerified()) {
+    private void requireUserConfirmed(@NotNull User user) {
+        if (user.getIsConfirmed() == null || !user.getIsConfirmed()) {
             throw new ForbiddenException("User " + user.getUsername() + " is not verified");
         }
     }
@@ -119,12 +112,13 @@ public class AuthenticationService {
     }
 
     private User signupUser(SignupRequest request) {
-        User newUser = signupRequestMapper.toUser(request);
-
-        Role role = roleRepository.findByName(Roles.ROLE_USER.name())
+        Role role = roleRepository.findById(Roles.ROLE_USER.id())
                 .orElseThrow(() -> new ServerException("Unable to assign role to user"));
 
-        newUser.setRoles(Set.of(role));
-        return newUser;
+        User user = signupRequestMapper.toUser(request, Set.of(role));
+        user = userRepository.save(user);
+
+        user.setConfirmationCode(confirmationService.generateConfirmationCode(user.getId()));
+        return userRepository.save(user);
     }
 }

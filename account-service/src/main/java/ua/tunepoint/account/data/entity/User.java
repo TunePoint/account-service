@@ -2,9 +2,11 @@ package ua.tunepoint.account.data.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -25,6 +28,7 @@ import java.util.Collection;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class User {
 
     @Id
@@ -41,8 +45,8 @@ public class User {
     @Column(name = "password_hash")
     private String passwordHash;
 
-    @Column(name = "is_verified")
-    private Boolean isVerified = false;
+    @Column(name = "is_confirmed")
+    private Boolean isConfirmed = false;
 
     @Column(name = "is_enabled")
     private Boolean isEnabled = true;
@@ -52,6 +56,9 @@ public class User {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+    private ConfirmationCode confirmationCode;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

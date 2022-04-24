@@ -6,7 +6,7 @@ CREATE TABLE account.users
     username      VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255)        NOT NULL,
     email         VARCHAR(255) UNIQUE NOT NULL,
-    is_verified   BOOLEAN DEFAULT FALSE,
+    is_confirmed   BOOLEAN DEFAULT FALSE,
     is_enabled    BOOLEAN DEFAULT TRUE,
     created_at    TIMESTAMP,
     updated_at    TIMESTAMP
@@ -20,40 +20,38 @@ CREATE TABLE account.roles
 
 CREATE TABLE account.users_roles
 (
-    user_id INTEGER REFERENCES account.users (id),
+    user_id INTEGER REFERENCES account.users (id) ON DELETE CASCADE,
     role_id INTEGER REFERENCES account.roles (id),
 
     CONSTRAINT users_roles_fk PRIMARY KEY (user_id, role_id)
 );
 
-CREATE TABLE account.verification_codes
+CREATE TABLE account.confirmation_codes
 (
-    id              SERIAL PRIMARY KEY,
-    user_id         INTEGER REFERENCES account.users (id) NOT NULL,
-    code            VARCHAR(32)                           NOT NULL,
-    expiration_date TIMESTAMP
+    id       INTEGER REFERENCES account.users (id) ON DELETE CASCADE NOT NULL,
+    code     VARCHAR(32)                                             NOT NULL,
+    due_date TIMESTAMP,
+    last_sent TIMESTAMP,
+    attempts INTEGER DEFAULT 0
 );
 
 CREATE TABLE account.profiles
 (
     id         INTEGER PRIMARY KEY REFERENCES account.users (id),
-    avatar_id VARCHAR(255),
+    avatar_id  VARCHAR(64),
     first_name VARCHAR(64),
     last_name  VARCHAR(64),
     bio        VARCHAR(512),
     birth_date DATE,
     created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP,
+
+    CONSTRAINT profile_user_fk FOREIGN KEY (id) REFERENCES account.users (id) ON DELETE CASCADE
 );
 
 CREATE INDEX users_id_idx ON account.users (id);
-CREATE INDEX verification_codes_user_id_idx ON account.verification_codes (user_id);
+CREATE INDEX verification_codes_user_id_idx ON account.confirmation_codes (id);
 CREATE INDEX roles_name_idx ON account.roles (name);
-
-INSERT INTO account.roles
-VALUES (1, 'ROLE_ADMIN'),
-       (2, 'ROLE_USER'),
-       (3, 'ROLE_MODERATOR');
 
 CREATE FUNCTION create_profile() RETURNS trigger AS $$
 BEGIN
