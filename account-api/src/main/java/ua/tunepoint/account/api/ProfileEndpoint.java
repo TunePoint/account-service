@@ -7,6 +7,6 @@ import ua.tunepoint.account.model.response.ProfileGetResponse;
 
 public interface ProfileEndpoint {
 
-    @GetMapping("/profiles/{id}")
+    @GetMapping("/accounts/profiles/{id}")
     ResponseEntity<ProfileGetResponse> getProfile(@PathVariable("id") Long id);
 }

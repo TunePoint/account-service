@@ -18,7 +18,7 @@ import ua.tunepoint.security.UserPrincipal;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/profiles")
+@RequestMapping("/accounts/profiles")
 public class ProfileController {
 
     private final ProfileService profileService;

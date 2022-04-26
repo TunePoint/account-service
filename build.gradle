@@ -7,7 +7,7 @@ plugins {
 
 allprojects {
     group = 'ua.tunepoint'
-    version = '0.0.5'
+    version = '0.0.6'
 }
 
 subprojects {
@@ -47,6 +47,7 @@ subprojects {
             dependency 'org.springframework.boot:spring-boot-starter-security:2.6.4'
             dependency 'org.springframework.boot:spring-boot-starter-validation:2.6.4'
             dependency 'org.springframework.boot:spring-boot-starter-web:2.6.4'
+            dependency 'org.springframework.data:spring-data-commons:2.6.4'
             dependency 'org.springframework.kafka:spring-kafka:2.8.2'
 
             dependency 'org.projectlombok:lombok:1.18.22'

@@ -24,15 +24,18 @@ public class ProfileService {
     private final ProfileMapper profileMapper;
     private final ProfileUpdateAccessManager profileUpdateAccessManager;
 
-    public void create(Long id, String username, String email) {
-        profileRepository.save(Profile.create(id, username, email));
+    public void create(Long id) {
+        profileRepository.save(
+                Profile.create(id)
+        );
     }
 
     public ProfilePayload findById(Long id) {
         var profile = profileRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Profile for user with id '" + id + "' was not found"));
 
-        var avatar = resourceService.getImage(profile.getAvatarId()).orElse(null);
+        var avatar = resourceService.getImage(profile.getAvatarId())
+                .orElse(null);
 
         return profileMapper.toPayload(profile, avatar);
     }
@@ -43,7 +46,7 @@ public class ProfileService {
 
         profileUpdateAccessManager.authorize(user, profile);
 
-        var avatar = request.getAvatarId() == null ? requireAvatar(request.getAvatarId()) : null;
+        var avatar = request.getAvatarId() != null ? requireAvatar(request.getAvatarId()) : null;
 
         profileMapper.mergeProfile(profile, request);
         var savedProfile = profileRepository.save(profile);

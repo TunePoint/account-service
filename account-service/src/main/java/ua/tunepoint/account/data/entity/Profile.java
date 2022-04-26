@@ -29,12 +29,6 @@ public class Profile {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "username")
-    private String username;
-
-    @Column(name = "email")
-    private String email;
-
     @Column(name = "first_name")
     private String firstName;
 
@@ -73,12 +67,10 @@ public class Profile {
         updatedAt = LocalDateTime.now();
     }
 
-    public static Profile create(Long id, String username, String email) {
+    public static Profile create(Long id) {
         var profile = new Profile();
 
         profile.setId(id);
-        profile.setUsername(username);
-        profile.setEmail(email);
 
         return profile;
     }

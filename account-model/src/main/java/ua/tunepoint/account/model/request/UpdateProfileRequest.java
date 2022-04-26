@@ -20,4 +20,8 @@ public class UpdateProfileRequest {
     private LocalDate birthDate;
 
     private String avatarId;
+
+    private String city;
+
+    private String country;
 }

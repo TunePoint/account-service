@@ -17,8 +17,6 @@ public class ProfilePayload {
 
     private Long id;
 
-    private String username;
-
     private String firstName;
 
     private String lastName;
@@ -28,4 +26,8 @@ public class ProfilePayload {
     private LocalDate birthDate;
 
     private Resource avatar;
+
+    private String country;
+
+    private String city;
 }
