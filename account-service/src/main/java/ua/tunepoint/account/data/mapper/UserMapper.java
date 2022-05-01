@@ -17,6 +17,7 @@ public interface UserMapper {
             @Mapping(target = "id", source = "user.id"),
             @Mapping(target = "username", source = "user.username"),
             @Mapping(target = "profile", source = "profile"),
+            @Mapping(target = "statistics", source = "user.statistics")
     })
     UserPublicPayload toPublicUser(User user, ProfilePayload profile);
 
@@ -24,7 +25,8 @@ public interface UserMapper {
             @Mapping(target = "id", source = "user.id"),
             @Mapping(target = "username", source = "user.username"),
             @Mapping(target = "email", source = "user.email"),
-            @Mapping(target = "profile", source = "profile")
+            @Mapping(target = "profile", source = "profile"),
+            @Mapping(target = "statistics", source = "user.statistics")
     })
     UserPrivatePayload toPrivateUser(User user, ProfilePayload profile);
 }

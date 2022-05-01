@@ -30,6 +30,10 @@ public class User {
     @PrimaryKeyJoinColumn
     private Profile profile;
 
+    @OneToOne
+    @PrimaryKeyJoinColumn
+    private UserStatistics statistics;
+
     public static User create(Long id, String username, String email) {
         var user = new User();
         user.setId(id);

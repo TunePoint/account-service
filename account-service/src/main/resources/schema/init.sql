@@ -30,4 +30,45 @@ CREATE TABLE account.users_followers
     CONSTRAINT users_followers_pk PRIMARY KEY(user_id, follower_id)
 );
 
+CREATE TABLE account.users_statistics
+(
+    id BIGINT PRIMARY KEY REFERENCES account.users(id),
+    follower_count BIGINT DEFAULT 0,
+    following_count BIGINT DEFAULT 0
+);
+
 CREATE INDEX profiles_id_idx ON account.profiles(id);
+
+CREATE FUNCTION create_user_statistics() RETURNS trigger AS $$
+BEGIN
+    INSERT INTO account.users_statistics(id) values (new.id);
+RETURN new;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER user_created AFTER INSERT ON account.users
+    FOR EACH ROW EXECUTE procedure create_user_statistics();
+
+CREATE FUNCTION update_user_statistics_follow() RETURNS trigger AS $$
+BEGIN
+    UPDATE account.users_statistics SET follower_count = follower_count + 1 WHERE id = new.user_id;
+    UPDATE account.users_statistics SET following_count = following_count + 1 WHERE id = new.follower_id;
+RETURN new;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER follow_event AFTER INSERT ON account.users_followers
+    FOR EACH ROW EXECUTE procedure update_user_statistics_follow();
+
+CREATE FUNCTION update_user_statistics_unfollow() RETURNS trigger AS $$
+BEGIN
+    UPDATE account.users_statistics SET follower_count = follower_count - 1 WHERE id = old.user_id;
+    UPDATE account.users_statistics SET following_count = following_count - 1 WHERE id = old.follower_id;
+RETURN new;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER unfollow_event AFTER DELETE ON account.users_followers
+    FOR EACH ROW EXECUTE procedure update_user_statistics_unfollow();
+
+
+-- drop function create_user_statistics;
+-- drop function update_user_statistics_follow;
+-- drop function update_user_statistics_unfollow;
