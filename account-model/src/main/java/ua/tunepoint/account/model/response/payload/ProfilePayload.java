@@ -17,6 +17,8 @@ public class ProfilePayload {
 
     private Long id;
 
+    private String pseudonym;
+
     private String firstName;
 
     private String lastName;

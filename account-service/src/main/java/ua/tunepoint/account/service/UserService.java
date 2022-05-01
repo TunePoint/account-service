@@ -41,7 +41,6 @@ public class UserService {
                     id, username, email
             )
         );
-        profileService.create(user.getId());
     }
 
     private User requireUser(Long id) {

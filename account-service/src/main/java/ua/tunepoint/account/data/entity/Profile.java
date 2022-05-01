@@ -29,6 +29,9 @@ public class Profile {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "pseudonym")
+    private String pseudonym;
+
     @Column(name = "first_name")
     private String firstName;
 

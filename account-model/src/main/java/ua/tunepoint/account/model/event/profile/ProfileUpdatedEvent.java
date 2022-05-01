@@ -1,15 +1,16 @@
-package ua.tunepoint.account.model.request;
+package ua.tunepoint.account.model.event.profile;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
+import ua.tunepoint.event.model.DomainEvent;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateProfileRequest {
+public class ProfileUpdatedEvent implements DomainEvent {
+
+    private Long id;
 
     private String firstName;
 
@@ -18,12 +19,4 @@ public class UpdateProfileRequest {
     private String pseudonym;
 
     private String bio;
-
-    private LocalDate birthDate;
-
-    private String avatarId;
-
-    private String city;
-
-    private String country;
 }

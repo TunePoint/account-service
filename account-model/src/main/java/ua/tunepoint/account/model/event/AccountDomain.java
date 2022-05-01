@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum AccountDomain {
 
+    USER("user"),
     PROFILE("profile");
 
     private final String name;

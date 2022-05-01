@@ -3,33 +3,31 @@ package ua.tunepoint.account.event;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ua.tunepoint.account.service.ProfileService;
 import ua.tunepoint.account.service.UserService;
+import ua.tunepoint.auth.model.event.user.UserRegisteredEvent;
 import ua.tunepoint.event.starter.handler.DomainEventHandlers;
 import ua.tunepoint.event.starter.handler.DomainEventHandlersBuilder;
 import ua.tunepoint.event.starter.registry.DomainRegistry;
-import ua.tunepoint.auth.model.event.user.UserCreatedEvent;
 
-import static ua.tunepoint.auth.model.event.AuthDomain.USER;
+import static ua.tunepoint.auth.model.event.AuthDomain.AUTH;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AccountEventConsumer {
 
-    private final ProfileService profileService;
     private final UserService userService;
     private final DomainRegistry domainRegistry;
 
     public DomainEventHandlers eventHandlers() {
         return DomainEventHandlersBuilder.withRegistry(domainRegistry)
-                .forDomain(USER.getName())
-                .onEvent(UserCreatedEvent.class, this::handleUserCreated)
+                .forDomain(AUTH.getName())
+                .onEvent(UserRegisteredEvent.class, this::handleUserCreated)
                 .build();
     }
 
-    public void handleUserCreated(UserCreatedEvent event) {
+    public void handleUserCreated(UserRegisteredEvent event) {
         log.info("Handling user created event: " + event);
 
         try {

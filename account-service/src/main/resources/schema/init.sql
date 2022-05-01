@@ -11,6 +11,7 @@ CREATE TABLE account.profiles
 (
     id         BIGINT PRIMARY KEY REFERENCES account.users(id),
     avatar_id  VARCHAR(64),
+    pseudonym VARCHAR(64),
     first_name VARCHAR(64),
     last_name  VARCHAR(64),
     bio        VARCHAR(512),
@@ -38,6 +39,15 @@ CREATE TABLE account.users_statistics
 );
 
 CREATE INDEX profiles_id_idx ON account.profiles(id);
+
+CREATE FUNCTION create_profile() RETURNS trigger AS $$
+BEGIN
+    INSERT INTO account.profiles(id) values (new.id);
+RETURN new;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER user_created_profile AFTER INSERT ON account.users
+    FOR EACH ROW EXECUTE procedure create_profile();
 
 CREATE FUNCTION create_user_statistics() RETURNS trigger AS $$
 BEGIN

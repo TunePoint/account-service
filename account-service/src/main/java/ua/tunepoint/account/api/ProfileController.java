@@ -10,10 +10,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ua.tunepoint.account.service.ProfileService;
 import ua.tunepoint.account.model.request.UpdateProfileRequest;
 import ua.tunepoint.account.model.response.ProfileGetResponse;
 import ua.tunepoint.account.model.response.ProfileUpdateResponse;
+import ua.tunepoint.account.service.MutateProfileService;
+import ua.tunepoint.account.service.ProfileService;
 import ua.tunepoint.security.UserPrincipal;
 
 @RestController
@@ -22,6 +23,7 @@ import ua.tunepoint.security.UserPrincipal;
 public class ProfileController {
 
     private final ProfileService profileService;
+    private final MutateProfileService mutateProfileService;
 
     @GetMapping("/{id}")
     public ResponseEntity<ProfileGetResponse> getProfile(@PathVariable Long id) {
@@ -37,7 +39,9 @@ public class ProfileController {
     @PutMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ProfileUpdateResponse> updateProfile(@PathVariable Long id, @AuthenticationPrincipal UserPrincipal currentUser, @RequestBody UpdateProfileRequest request) {
-        var payload = profileService.update(id, request, currentUser);
+        var payload = mutateProfileService.update(
+                id, request, currentUser
+        );
         var response = ProfileUpdateResponse.builder().payload(payload).build();
         return ResponseEntity.ok(response);
     }
