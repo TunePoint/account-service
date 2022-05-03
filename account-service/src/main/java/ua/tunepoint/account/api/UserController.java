@@ -11,14 +11,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ua.tunepoint.account.model.response.ListFollowersResponse;
+import ua.tunepoint.account.model.response.UserBulkResponse;
 import ua.tunepoint.account.model.response.UserPrivateResponse;
 import ua.tunepoint.account.model.response.UserPublicResponse;
 import ua.tunepoint.account.service.FollowService;
 import ua.tunepoint.account.service.UserService;
 import ua.tunepoint.security.UserPrincipal;
 import ua.tunepoint.web.model.StatusResponse;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -34,6 +38,16 @@ public class UserController {
         var payload = userService.findUserPrivate(user.getId());
         return ResponseEntity.ok(
                 UserPrivateResponse.builder()
+                        .payload(payload)
+                        .build()
+        );
+    }
+
+    @GetMapping("/_bulk")
+    public ResponseEntity<UserBulkResponse> searchBulk(@RequestParam("ids") List<Long> ids) {
+        var payload = userService.findBulk(ids);
+        return ResponseEntity.ok(
+                UserBulkResponse.builder()
                         .payload(payload)
                         .build()
         );
