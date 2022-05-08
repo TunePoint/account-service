@@ -19,16 +19,20 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
-    private final ProfileSmartMapper profileSmartMapper;
+    private final FollowService followService;
     private final ProfileService profileService;
+
+    private final UserRepository userRepository;
+
+    private final ProfileSmartMapper profileSmartMapper;
     private final UserMapper userMapper;
 
-    public UserPublicPayload findUserPublic(Long userId) {
+    public UserPublicPayload findUserPublic(Long userId, Long clientId) {
         var user = requireUser(userId);
         return userMapper.toPublicUser(
                 user,
-                profileService.findById(user.getId())
+                profileService.findById(user.getId()),
+                isFollowing(clientId, userId)
         );
     }
 
@@ -54,10 +58,19 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("user with id " + id + " was not found"));
     }
 
-    public List<UserPublicPayload> findBulk(List<Long> ids) {
+    public List<UserPublicPayload> findBulk(List<Long> ids, Long clientId) {
         return userRepository.findBulk(ids)
-                .stream().map(user -> userMapper.toPublicUser(user, profileSmartMapper.toPayload(user.getProfile())))
+                .stream().map(user -> userMapper.toPublicUser(
+                        user, profileSmartMapper.toPayload(user.getProfile()), isFollowing(clientId, user.getId()))
+                )
                 .sorted(Comparator.comparing(it -> ids.indexOf(it.getId())))
                 .collect(Collectors.toList());
+    }
+
+    private boolean isFollowing(Long clientId, Long userId) {
+        if (clientId == null) {
+            return false;
+        }
+        return followService.isFollowing(clientId, userId);
     }
 }

@@ -11,4 +11,5 @@ public class Statistics {
 
     private Long followerCount;
     private Long followingCount;
+    private Long audioCount;
 }

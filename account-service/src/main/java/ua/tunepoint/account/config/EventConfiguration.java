@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import ua.tunepoint.account.event.AccountEventConsumer;
 import ua.tunepoint.account.model.event.ProfileEventType;
 import ua.tunepoint.account.model.event.UserEventType;
+import ua.tunepoint.audio.model.event.AudioEventType;
 import ua.tunepoint.auth.model.event.AuthEventType;
 import ua.tunepoint.event.starter.DomainRelation;
 import ua.tunepoint.event.starter.handler.DomainEventHandlers;
@@ -15,6 +16,7 @@ import java.util.Set;
 
 import static ua.tunepoint.account.model.event.AccountDomain.PROFILE;
 import static ua.tunepoint.account.model.event.AccountDomain.USER;
+import static ua.tunepoint.audio.model.event.Domain.AUDIO;
 import static ua.tunepoint.auth.model.event.AuthDomain.AUTH;
 
 
@@ -27,6 +29,11 @@ public class EventConfiguration {
                 .register(
                         AUTH.getName(),
                         AuthEventType.values(),
+                        Set.of(DomainRelation.CONSUMER)
+                )
+                .register(
+                        AUDIO.getName(),
+                        AudioEventType.values(),
                         Set.of(DomainRelation.CONSUMER)
                 )
                 .register(

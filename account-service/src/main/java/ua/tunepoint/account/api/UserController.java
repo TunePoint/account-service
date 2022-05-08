@@ -18,11 +18,14 @@ import ua.tunepoint.account.model.response.UserBulkResponse;
 import ua.tunepoint.account.model.response.UserPrivateResponse;
 import ua.tunepoint.account.model.response.UserPublicResponse;
 import ua.tunepoint.account.service.FollowService;
+import ua.tunepoint.account.service.MutateFollowService;
 import ua.tunepoint.account.service.UserService;
 import ua.tunepoint.security.UserPrincipal;
 import ua.tunepoint.web.model.StatusResponse;
 
 import java.util.List;
+
+import static ua.tunepoint.account.utils.UserUtils.extractId;
 
 @RequiredArgsConstructor
 @RestController
@@ -31,6 +34,7 @@ public class UserController {
 
     private final UserService userService;
     private final FollowService followService;
+    private final MutateFollowService mutateFollowService;
 
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
@@ -44,8 +48,8 @@ public class UserController {
     }
 
     @GetMapping("/_bulk")
-    public ResponseEntity<UserBulkResponse> searchBulk(@RequestParam("ids") List<Long> ids) {
-        var payload = userService.findBulk(ids);
+    public ResponseEntity<UserBulkResponse> searchBulk(@RequestParam("ids") List<Long> ids, @AuthenticationPrincipal UserPrincipal user) {
+        var payload = userService.findBulk(ids, extractId(user));
         return ResponseEntity.ok(
                 UserBulkResponse.builder()
                         .payload(payload)
@@ -54,8 +58,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserPublicResponse> getUser(@PathVariable Long id) {
-        var payload = userService.findUserPublic(id);
+    public ResponseEntity<UserPublicResponse> getUser(@PathVariable Long id, @AuthenticationPrincipal UserPrincipal user) {
+        var payload = userService.findUserPublic(id, extractId(user));
         return ResponseEntity.ok(
                 UserPublicResponse.builder()
                         .payload(payload)
@@ -64,22 +68,22 @@ public class UserController {
     }
 
     @GetMapping("/{id}/followers")
-    public ResponseEntity<ListFollowersResponse> listFollowers(@PathVariable Long id, @PageableDefault Pageable pageable) {
+    public ResponseEntity<ListFollowersResponse> listFollowers(@PathVariable Long id, @PageableDefault Pageable pageable, @AuthenticationPrincipal UserPrincipal user) {
         return ResponseEntity.ok(
                 ListFollowersResponse.builder()
                         .payload(
-                                followService.findFollowers(id, pageable)
+                                followService.findFollowers(id, pageable, extractId(user))
                         )
                         .build()
         );
     }
 
     @GetMapping("/{id}/following")
-    public ResponseEntity<ListFollowersResponse> listWhoFollows(@PathVariable Long id, @PageableDefault Pageable pageable) {
+    public ResponseEntity<ListFollowersResponse> listWhoFollows(@PathVariable Long id, @PageableDefault Pageable pageable, @AuthenticationPrincipal UserPrincipal user) {
         return ResponseEntity.ok(
                 ListFollowersResponse.builder()
                         .payload(
-                                followService.findWhoFollows(id, pageable)
+                                followService.findWhoFollows(id, pageable, extractId(user))
                         )
                         .build()
         );
@@ -88,7 +92,7 @@ public class UserController {
     @PostMapping("/{id}/followers")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<StatusResponse> follow(@PathVariable Long id, @AuthenticationPrincipal UserPrincipal user) {
-        followService.follow(id, user.getId());
+        mutateFollowService.follow(id, user.getId());
 
         return ResponseEntity.ok(
                 StatusResponse.builder().build()
@@ -98,7 +102,7 @@ public class UserController {
     @DeleteMapping("/{id}/followers")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<StatusResponse> unfollow(@PathVariable Long id, @AuthenticationPrincipal UserPrincipal user) {
-        followService.unfollow(id, user.getId());
+        mutateFollowService.unfollow(id, user.getId());
 
         return ResponseEntity.ok(
                 StatusResponse.builder().build()

@@ -35,7 +35,8 @@ CREATE TABLE account.users_statistics
 (
     id BIGINT PRIMARY KEY REFERENCES account.users(id),
     follower_count BIGINT DEFAULT 0,
-    following_count BIGINT DEFAULT 0
+    following_count BIGINT DEFAULT 0,
+    audio_count BIGINT DEFAULT 0
 );
 
 CREATE INDEX profiles_id_idx ON account.profiles(id);

@@ -7,7 +7,7 @@ plugins {
 
 allprojects {
     group = 'ua.tunepoint'
-    version = '0.0.13'
+    version = '0.0.14'
 }
 
 subprojects {
@@ -72,6 +72,7 @@ subprojects {
             dependency 'ua.tunepoint:commons-event-model:0.0.10'
             dependency 'ua.tunepoint:commons-event-starter:0.0.10'
             dependency 'ua.tunepoint:commons-web-exception:0.0.3'
+            dependency 'ua.tunepoint:audio-model:0.0.12'
             dependency 'ua.tunepoint:mail-api:0.0.3'
             dependency 'ua.tunepoint:mail-model:0.0.3'
             dependency 'ua.tunepoint:resource-api:0.0.6'

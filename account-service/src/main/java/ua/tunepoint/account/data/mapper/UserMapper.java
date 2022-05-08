@@ -17,9 +17,10 @@ public interface UserMapper {
             @Mapping(target = "id", source = "user.id"),
             @Mapping(target = "username", source = "user.username"),
             @Mapping(target = "profile", source = "profile"),
-            @Mapping(target = "statistics", source = "user.statistics")
+            @Mapping(target = "statistics", source = "user.statistics"),
+            @Mapping(target = "isFollowed", source = "isFollowed")
     })
-    UserPublicPayload toPublicUser(User user, ProfilePayload profile);
+    UserPublicPayload toPublicUser(User user, ProfilePayload profile, Boolean isFollowed);
 
     @Mappings({
             @Mapping(target = "id", source = "user.id"),

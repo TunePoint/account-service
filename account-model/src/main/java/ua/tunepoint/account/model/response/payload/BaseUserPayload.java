@@ -14,4 +14,9 @@ public class BaseUserPayload {
     private String username;
     private Statistics statistics;
     private ProfilePayload profile;
+
+    /**
+     * Is followed by current user (always false for unauthorized requests)
+     */
+    private Boolean isFollowed;
 }

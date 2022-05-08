@@ -32,98 +32,40 @@ public class FollowService {
     private final UserFollowerRepository followRepository;
     private final UserRepository userRepository;
 
-    private final EventPublisher eventPublisher;
-
     private final ProfileSmartMapper profileSmartMapper;
     private final UserMapper userMapper;
 
-    @Transactional
-    public void follow(Long userId, Long clientId) {
-        var followId = new UserFollowerId(userId, clientId);
-
-        if (Objects.equals(userId, clientId)) {
-            throw new BadRequestException(
-                    "user can't follow self"
-            );
-        }
-
-        if (followRepository.existsById(followId)) {
-            throw new BadRequestException(
-                    "user with id " + clientId + " is already following user with id " + userId
-            );
-        }
-
-        Stream.of(userId, clientId).forEach(this::requireUserExists);
-
-        var link = new UserFollower();
-        link.setId(followId);
-
-        followRepository.save(link);
-
-        eventPublisher.publish(
-                USER.getName(),
-                singletonList(
-                        new UserFollowedEvent(
-                                userId,
-                                clientId,
-                                LocalDateTime.now()
-                        )
-                )
-        );
-    }
-
-    @Transactional
-    public void unfollow(Long userId, Long clientId) {
-        var followId = new UserFollowerId(userId, clientId);
-
-        if (Objects.equals(userId, clientId)) {
-            throw new BadRequestException(
-                    "user can't follow self"
-            );
-        }
-
-        if (!followRepository.existsById(followId)) {
-            throw new BadRequestException(
-                    "user with id " + clientId + " is already not following user with id " + userId
-            );
-        }
-
-        Stream.of(userId, clientId).forEach(this::requireUserExists);
-
-        followRepository.deleteById(followId);
-
-        eventPublisher.publish(USER.getName(),
-                singletonList(
-                        new UserUnfollowedEvent(
-                                userId,
-                                clientId,
-                                LocalDateTime.now()
-                        )
-                ));
-    }
-
-    public Page<FollowPayload> findFollowers(Long userId, Pageable pageable) {
+    public Page<FollowPayload> findFollowers(Long userId, Pageable pageable, Long clientId) {
         return followRepository.findFollowers(userId, pageable)
                 .map(link -> new FollowPayload(
                                 userMapper.toPublicUser(
                                         link.getFollower(),
-                                        profileSmartMapper.toPayload(link.getFollower().getProfile())
+                                        profileSmartMapper.toPayload(link.getFollower().getProfile()),
+                                        isFollowing(clientId, link.getUser().getId())
                                 ),
                                 link.getFollowingDate()
                         )
                 );
     }
 
-    public Page<FollowPayload> findWhoFollows(Long userId, Pageable pageable) {
+    public Page<FollowPayload> findWhoFollows(Long userId, Pageable pageable, Long clientId) {
         return followRepository.findWhoFollows(userId, pageable)
                 .map(link -> new FollowPayload(
                                 userMapper.toPublicUser(
                                         link.getUser(),
-                                        profileSmartMapper.toPayload(link.getUser().getProfile())
+                                        profileSmartMapper.toPayload(link.getUser().getProfile()),
+                                        isFollowing(clientId, link.getUser().getId())
                                 ),
                                 link.getFollowingDate()
                         )
                 );
+    }
+
+    public boolean isFollowing(Long userId, Long authorId) {
+        if (userId == null) {
+            return false;
+        }
+        return followRepository.existsById(new UserFollowerId(authorId, userId));
     }
 
     private void requireUserExists(Long id) {

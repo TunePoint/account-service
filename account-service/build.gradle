@@ -30,6 +30,7 @@ dependencies {
     implementation 'ua.tunepoint:commons-event-starter'
     implementation 'ua.tunepoint:mail-model'
     implementation 'ua.tunepoint:mail-api'
+    implementation 'ua.tunepoint:audio-model'
 
     compileOnly 'org.projectlombok:lombok'
     compileOnly 'org.mapstruct:mapstruct-processor'
